@@ -2,13 +2,20 @@ package com.sussy.mangashopapi.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import com.sussy.mangashopapi.entity.Author;
 import com.sussy.mangashopapi.entity.Manga;
 
-@SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class MangaRepositoryTest {
 
     @Autowired
@@ -23,4 +30,24 @@ public class MangaRepositoryTest {
         mangaRepository.save(manga);
 
     }
+
+    @Test
+    public void whenGivenTitle_ShouldReturnManga(){
+        Manga manga=mangaRepository.findMangaByName("Dororo").get();
+        assertEquals("tezuka osamu", manga.getAuthor().getName());
+        
+    }
+
+    @Test
+    public void getAllManga(){
+       List<Manga> mangas=mangaRepository.findAll();
+        System.out.println(mangas);
+    }
+
+    @Test 
+    public void whenGivenId_ShouldReturnMangaWithSameId(){
+        Long id=23L;
+        assertEquals(id, mangaRepository.findById(id).get().getMangaId());
+    }
+    
 }
